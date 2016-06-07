@@ -890,6 +890,17 @@ static gboolean terminal_tab_button_press_event(GtkWidget * widget, GdkEventButt
         terminal_close_button_event(NULL, term);
         return TRUE;
     }
+    /* Double left click creates new tab. */
+    if (event->button == 1 && event->type == GDK_2BUTTON_PRESS) 
+    {
+        g_debug("double clicked with button %d\n", event->button);
+
+	LXTerminal * terminal = term->parent;
+	terminal_new_tab(terminal, NULL);
+
+	return TRUE;
+    }
+    
     return FALSE;
 }
 
@@ -1222,7 +1233,7 @@ static Term * terminal_new(LXTerminal * terminal, const gchar * label, const gch
     g_signal_connect(G_OBJECT(term->vte), "child-exited", G_CALLBACK(terminal_child_exited_event), term);
     g_signal_connect(G_OBJECT(term->vte), "cursor-moved", G_CALLBACK(terminal_vte_cursor_moved_event), term);
     g_signal_connect(G_OBJECT(term->vte), "window-title-changed", G_CALLBACK(terminal_window_title_changed_event), term);
-
+    
     /* Show the widget and return. */
     gtk_widget_show_all(term->box);
 
